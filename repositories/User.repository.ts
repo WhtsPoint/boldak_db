@@ -24,8 +24,9 @@ class UserRepository {
         await this._validateUserExisting(id)
         const [updateLine, params] = prepareUpdateRows(
             ["username", "password", "email"],
-            {username: username.get(), password: password.get(), email: email.get()}
+            {username: username && username.get(), password: password && password.get(), email: email && email.get()}
         )
+        if(params.length === 0) throw new Error("Update has no changes")
         await this._database.execute(
             `UPDATE user SET ${updateLine} WHERE id = ?`,
             [...params, id.get()]
